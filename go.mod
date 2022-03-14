@@ -2,7 +2,10 @@ module testListen
 
 go 1.17
 
-require github.com/hyperledger/fabric-sdk-go v1.0.0
+require (
+	github.com/dlclark/regexp2 v1.4.0
+	github.com/hyperledger/fabric-sdk-go v1.0.0
+)
 
 require (
 	github.com/Knetic/govaluate v3.0.0+incompatible // indirect

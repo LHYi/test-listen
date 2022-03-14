@@ -13,6 +13,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/dlclark/regexp2"
 	"github.com/hyperledger/fabric-sdk-go/pkg/core/config"
 	"github.com/hyperledger/fabric-sdk-go/pkg/gateway"
 )
@@ -131,6 +132,40 @@ eventReplayLoop:
 		cleanUp()
 	}
 
+}
+
+func getLambda(s string) float64 {
+
+	pattern := "(?<=Lambda=)[0-9.]{6}"
+
+	reg, err := regexp2.Compile(pattern, 0)
+	if err != nil {
+		fmt.Printf("reg: %v, err: %v\n", reg, err)
+		return 0
+	}
+
+	value, _ := reg.FindStringMatch(s)
+
+	Lambda, _ := strconv.ParseFloat(fmt.Sprintf("%v", value), 64)
+
+	return Lambda
+}
+
+func getMismatch(s string) float64 {
+
+	pattern := "(?<=Mismatch=)[0-9.]{6}"
+
+	reg, err := regexp2.Compile(pattern, 0)
+	if err != nil {
+		fmt.Printf("reg: %v, err: %v\n", reg, err)
+		return 0
+	}
+
+	value, _ := reg.FindStringMatch(s)
+
+	Mismatch, _ := strconv.ParseFloat(fmt.Sprintf("%v", value), 64)
+
+	return Mismatch
 }
 
 func populateWallet(wallet *gateway.Wallet, userName string) error {
