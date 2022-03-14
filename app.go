@@ -118,7 +118,7 @@ eventReplayLoop:
 		select {
 		case event := <-notifier:
 			fmt.Printf("Received CC event: %s - %s \n", event.EventName, event.Payload)
-		case <-time.After(10 * time.Second):
+		case <-time.After(1 * time.Second):
 			fmt.Printf("No more events\n")
 			break eventReplayLoop
 		}
