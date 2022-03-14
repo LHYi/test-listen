@@ -91,7 +91,7 @@ func main() {
 	contract := network.GetContract(contractName)
 	log.Println("============ successfully got contract", contractName, "============")
 
-	eventID := "Org[0-9][a-zA-Z]+"
+	eventID := "Org2[a-zA-Z]+"
 	reg, notifier, err := contract.RegisterEvent(eventID)
 	if err != nil {
 		fmt.Printf("Failed to register contract event: %s", err)
