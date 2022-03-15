@@ -100,9 +100,10 @@ func main() {
 	}
 	defer contract.Unregister(reg)
 
+	// this is the demand
 	var P float64 = 0
-	var l1 float64 = 2 * P
-	var m1 float64 = 1.5
+	var l1 float64 = 5 - P
+	var m1 float64 = 0
 	var iter int = 0
 	var terminate bool = false
 iterLoop:
@@ -168,20 +169,20 @@ iterLoop:
 
 func update(l1 float64, l2 float64, m1 float64, m2 float64, P float64, iter int) (float64, float64, float64, bool) {
 	var eta float64 = 1 / float64(iter)
-	if eta < 0.05 {
-		eta = 0.05
+	if eta < 0.01 {
+		eta = 0.01
 	}
 	ltemp := 0.5*l1 + 0.5*l2 + eta*m1
-	Ptemp := ltemp / 2
-	if Ptemp > 8 {
-		Ptemp = 8
+	Ptemp := 5 - ltemp
+	if Ptemp > 5 {
+		Ptemp = 5
 	} else if Ptemp < 0 {
 		Ptemp = 0
 	}
-	mtemp := 0.5*m1 + 0.5*m2 + P - Ptemp
+	mtemp := 0.5*m1 + 0.5*m2 - P + Ptemp
 
 	var terminate bool
-	if math.Abs(mtemp) < 0.05 && math.Abs(ltemp-l1) < 0.05 {
+	if math.Abs(mtemp) < 0.01 && math.Abs(ltemp-l1) < 0.01 {
 		terminate = true
 	} else {
 		terminate = false
@@ -229,6 +230,26 @@ func getMismatch(s string) float64 {
 	}
 
 	return Mismatch
+}
+
+func getIter(s string) float64 {
+
+	pattern := "(?<=Iteration=)[0-9.-]+(?=, end)"
+
+	reg, err := regexp2.Compile(pattern, 0)
+	if err != nil {
+		fmt.Printf("reg: %v, err: %v\n", reg, err)
+		return 0
+	}
+
+	value, _ := reg.FindStringMatch(s)
+
+	Iteration, errIteration := strconv.ParseFloat(fmt.Sprintf("%v", value), 64)
+	if errIteration != nil {
+		log.Panic("Error capturing iteration")
+	}
+
+	return Iteration
 }
 
 func populateWallet(wallet *gateway.Wallet, userName string) error {
